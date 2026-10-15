@@ -1,16 +1,14 @@
 import { globalIgnores } from 'eslint/config'
-import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
+import tseslint from 'typescript-eslint'
 import pluginVue from 'eslint-plugin-vue'
+import vueParser from 'vue-eslint-parser'
 import pluginVitest from '@vitest/eslint-plugin'
 import pluginOxlint from 'eslint-plugin-oxlint'
 import skipFormatting from 'eslint-config-prettier/flat'
 
-// To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
-// import { configureVueProject } from '@vue/eslint-config-typescript'
-// configureVueProject({ scriptLangs: ['ts', 'tsx'] })
-// More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
-
-export default defineConfigWithVueTs(
+// Statt @vue/eslint-config-typescript nutzen wir typescript-eslint direkt.
+// Grund: Das Wrapper-Paket zieht fast-glob und damit braces (Sicherheitsmeldung, noch kein Patch).
+export default tseslint.config(
   {
     name: 'app/files-to-lint',
     files: ['**/*.{vue,ts,mts,tsx}'],
@@ -19,7 +17,17 @@ export default defineConfigWithVueTs(
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
 
   ...pluginVue.configs['flat/essential'],
-  vueTsConfigs.recommended,
+  ...tseslint.configs.recommended,
+
+  {
+    // In .vue-Dateien liest der Vue-Parser das Template, TypeScript-Code geht an den TS-Parser.
+    // Der Vue-Parser muss hier wieder gesetzt werden, weil tseslint.configs.recommended den TS-Parser für alle Dateien setzt.
+    files: ['**/*.vue'],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: { parser: tseslint.parser },
+    },
+  },
 
   {
     ...pluginVitest.configs.recommended,
