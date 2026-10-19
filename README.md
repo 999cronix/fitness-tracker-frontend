@@ -13,7 +13,9 @@ Projekt im Modul Webtechnologien (Prof. Dr. Arif Wider, Übungsgruppe 1, HTW Ber
 
 Das Spring-Boot-Backend liegt in einem eigenen Repo: https://github.com/999cronix/fitness-tracker
 
-Stand Milestone 2: Die Liste benutzt feste Beispieldaten direkt in `App.vue`. Das Frontend ruft das Backend noch nicht auf. Das kommt in Milestone 3 (`GET /workouts`).
+Das Frontend ruft `GET /workouts` am Backend auf und zeigt die Einträge als Liste an.
+
+Die Adresse des Backends kommt aus der Umgebungsvariable `VITE_API_URL`. Ohne diese Variable wird `http://localhost:8080` benutzt. Lokal muss das Backend laufen, im Repo `fitness-tracker` mit `./gradlew bootRun`. Eine andere Adresse setzt man z.B. in einer Datei `.env.local` im Frontend-Ordner: `VITE_API_URL=http://...`.
 
 ## Starten
 
@@ -43,9 +45,11 @@ Danach ist die App unter http://localhost:5173/ erreichbar.
 - `src/types/WorkoutEntry.ts`: Typ für einen Eintrag (`id`, `date`, `exercise`, `weightKg`, `reps`)
 - `src/components/WorkoutList.vue`: bekommt die Einträge als Prop `entries` und zeigt sie mit `v-for` an
 - `src/components/WorkoutItem.vue`: eine Zeile in der Liste
-- `src/App.vue`: bindet die Liste ein und übergibt die Beispieldaten
+- `src/views/HomeView.vue`: Startseite, lädt die Einträge per `GET /workouts` und übergibt sie an die Liste
+- `src/api/workouts.ts`: der `fetch`-Aufruf ans Backend
+- `src/App.vue`: Rahmen der App, zeigt die Seiten über den Router an
 
 ## Geplant
 
-- Milestone 3: Deployment auf Render, Daten per `GET /workouts` vom Backend laden
+- Milestone 3: Daten per `GET /workouts` vom Backend laden (erledigt). Deployment auf Render steht noch aus
 - Milestone 4: Datenbank und `POST`-Route zum Anlegen neuer Einträge
