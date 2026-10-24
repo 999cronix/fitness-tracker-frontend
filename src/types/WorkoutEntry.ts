@@ -7,3 +7,6 @@ export interface WorkoutEntry {
   weightKg: number
   reps: number
 }
+
+// Typ für einen neuen Eintrag, den wir ans Backend schicken. Die "id" vergibt die Datenbank, also fehlt sie hier.
+export type NewWorkoutEntry = Omit<WorkoutEntry, 'id'>
